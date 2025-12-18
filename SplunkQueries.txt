@@ -1,3 +1,5 @@
+Q1
+
 Query:
 
 index=botsv3 earliest=0 sourcetype="aws:cloudtrail" | spath path=userIdentity.arn output=arn | stats values(arn)
@@ -24,8 +26,198 @@ arn:aws:sts::622676721278:assumed-role/splunk_lambda/VPCFlowLogs
 
 ---
 
+Q2
+
+Query: 
+
+index=botsv3 earliest=0 sourcetype="aws:cloudtrail" | spath | search eventType=AwsApiCall | where isnull(userIdentity.sessionContext.attributes.mfaAuthenticated)
+
+Result: N/A
+
+---
+ 
+Q3
+
+Query: 
+
+index=botsv3 earliest=0 sourcetype="hardware"
+
+Result: 
+
+KEY                   VALUE
+CPU_TYPE              Intel(R) Xeon(R) CPU E5-2676 v3 @ 2.40GHz
+CPU_CACHE             30720 KB
+CPU_COUNT             2
+HARD_DRIVES           xvda 8 GB;
+NIC_TYPE              <notAvailable>
+NIC_COUNT             1
+MEMORY_REAL           4041808 kB
+MEMORY_SWAP           0 kB
+
+
+---
+
+Q4
+
 Query:
+
+index=botsv3 earliest=0 sourcetype="aws:cloudtrail" | spath | search eventName=PutBucketAcl
 
 Result:
 
+ [-]
+   awsRegion: us-west-1
+   eventID: ab45689d-69cd-41e7-8705-5350402cf7ac
+   eventName: PutBucketAcl
+   eventSource: s3.amazonaws.com
+   eventTime: 2018-08-20T13:01:46Z
+   eventType: AwsApiCall
+   eventVersion: 1.05
+   recipientAccountId: 622676721278
+   requestID: 487488D003569438
+   requestParameters: { [-]
+     AccessControlPolicy: { [-]
+       AccessControlList: { [-]
+         Grant: [ [-]
+           { [+]
+           }
+           { [+]
+           }
+           { [+]
+           }
+           { [+]
+           }
+           { [+]
+           }
+           { [-]
+             Grantee: { [-]
+               URI: http://acs.amazonaws.com/groups/global/AllUsers
+               xmlns:xsi: http://www.w3.org/2001/XMLSchema-instance
+               xsi:type: Group
+             }
+             Permission: READ
+           }
+           { [-]
+             Grantee: { [-]
+               URI: http://acs.amazonaws.com/groups/global/AllUsers
+               xmlns:xsi: http://www.w3.org/2001/XMLSchema-instance
+               xsi:type: Group
+             }
+             Permission: WRITE
+           }
+         ]
+       }
+       Owner: { [+]
+       }
+       xmlns: http://s3.amazonaws.com/doc/2006-03-01/
+     }
+     acl: [ [+]
+     ]
+     bucketName: frothlywebcode
+   }
+   responseElements: null
+   sourceIPAddress: 107.77.212.175
+   userAgent: signin.amazonaws.com
+   userIdentity: { [+]
+   }
+}
+
+
 ---
+
+Q5
+
+Query: 
+
+Same as previous
+
+Result:
+
+arn: arn:aws:iam::622676721278:user/bstoll 
+
+
+---
+
+Q6
+
+Query: 
+
+Same as previous
+
+Result:
+
+bucketName: frothlywebcode 
+
+
+---
+
+Q7
+
+Query: 
+
+index=botsv3 sourcetype="aws:s3:accesslogs" earliest=0 PUT frothlywebcode
+
+Result:
+
+4c018053e740f45beb45f68c0f5eff6347745488ae540130432c9fc64fae310d frothlywebcode [20/Aug/2018:13:02:44 +0000] 52.66.146.128 - DF1BA98D9E2369B4 REST.PUT.OBJECT OPEN_BUCKET_PLEASE_FIX.txt "PUT /OPEN_BUCKET_PLEASE_FIX.txt HTTP/1.1" 200 - - 377 268 9 "-" "Boto3/1.7.62 Python/2.7.14 Linux/4.14.47-64.38.amzn2.x86_64 Botocore/1.8.12"
+
+---
+
+Q7
+
+Query: 
+
+index=botsv3 sourcetype="winhostmon" earliest=0 | spath | search Type=OperatingSystem | stats count by OS
+
+Result:
+
+Microsoft Windows 10 Enterprise	30
+Microsoft Windows 10 Pro
+
+
+Query: 
+
+index=botsv3 sourcetype="winhostmon" earliest=0 | spath | search Type=OperatingSystem  OS="Microsoft Windows 10 Enterprise"
+
+Result:
+
+host=BSTOLL-L
+
+Query:
+
+index=botsv3 earliest=0 host="BSTOLL-L" | rex field=_raw "(?<FQDN>BSTOLL-L\.\S+\.\S+)" | dedup FQDN
+
+Result:
+
+08/20/2018 03:17:58 AM
+LogName=Security
+SourceName=Microsoft Windows security auditing.
+EventCode=4689
+EventType=0
+Type=Information
+ComputerName=BSTOLL-L.froth.ly
+TaskCategory=Process Termination
+OpCode=Info
+RecordNumber=989884
+Keywords=Audit Success
+Message=A process has exited.
+
+Subject:
+	Security ID:		AzureAD\BudStoll
+	Account Name:		BudStoll
+	Account Domain:		AzureAD
+	Logon ID:		0x4B339
+
+Process Information:
+	Process ID:	0x13a8
+	Process Name:	C:\Windows\System32\RuntimeBroker.exe
+	Exit Status:	0x0
+
+
+
+
+
+
+
+
+
