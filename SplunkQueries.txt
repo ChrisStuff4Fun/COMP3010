@@ -31,8 +31,31 @@ Q2
 Query: 
 
 index=botsv3 earliest=0 sourcetype="aws:cloudtrail" | spath | search eventType=AwsApiCall | where isnull(userIdentity.sessionContext.attributes.mfaAuthenticated)
+&
+index=botsv3 earliest=0 sourcetype="aws:cloudtrail" | spath | search eventType=AwsApiCall AND userIdentity.arn="*user*" | where isnull(userIdentity.sessionContext.attributes.mfaAuthenticated) | stats count by eventName,userIdentity.arn
 
-Result: N/A
+Result: 
+
+AuthorizeSecurityGroupIngress		arn:aws:iam::622676721278:user/bstoll		4
+CreateAccessKey				arn:aws:iam::622676721278:user/web_admin	4
+CreateDefaultVpc			arn:aws:iam::622676721278:user/web_admin	60
+CreateUser				arn:aws:iam::622676721278:user/web_admin	4
+Decrypt					arn:aws:iam::622676721278:user/splunk_access	180
+DeleteAccessKey				arn:aws:iam::622676721278:user/web_admin	4
+DescribeAccountAttributes		arn:aws:iam::622676721278:user/bstoll		32
+DescribeAccountAttributes		arn:aws:iam::622676721278:user/web_admin	4
+DescribeAddresses			arn:aws:iam::622676721278:user/bstoll		80
+DescribeAddresses			arn:aws:iam::622676721278:user/btun		24
+DescribeAddresses			arn:aws:iam::622676721278:user/splunk_access	72
+DescribeAlarms				arn:aws:iam::622676721278:user/bstoll		44
+DescribeAlarms				arn:aws:iam::622676721278:user/btun		20
+DescribeAutoScalingGroups		arn:aws:iam::622676721278:user/bstoll		8
+DescribeAvailabilityZones		arn:aws:iam::622676721278:user/bstoll		52
+DescribeAvailabilityZones		arn:aws:iam::622676721278:user/btun		8
+DescribeConfigRuleEvaluationStatus	arn:aws:iam::622676721278:user/splunk_access	7192
+DescribeConfigRules			arn:aws:iam::622676721278:user/splunk_access	548
+DescribeDBInstances			arn:aws:iam::622676721278:user/splunk_access	72
+DescribeHosts				arn:aws:iam::622676721278:user/bstoll
 
 ---
  
