@@ -190,7 +190,7 @@ Q8
 
 Query: 
 
-index=botsv3 sourcetype="winhostmon" earliest=0 | spath | search Type=OperatingSystem | stats count by OS
+index=botsv3 sourcetype="winhostmon" earliest=0 | spath | search Type=OperatingSystem | stats count by OS,host
 
 Result:
 
